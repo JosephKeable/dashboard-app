@@ -5,10 +5,13 @@
         <VAppBarTitle>Dashboard - Monitoring the Situation</VAppBarTitle>
         <template #append>
           <VBtn
-            icon
+            class="mr-1"
+            append-icon="mdi-filter"
+            size="large"
+            variant="tonal"
             @click="toggleFilterDrawer"
           >
-            <VIcon>mdi-filter</VIcon>
+            Filters
           </VBtn>
         </template>
       </VAppBar>
@@ -16,8 +19,9 @@
         v-model="filterDrawerOpen"
         app
         location="end"
+        width="350"
       >
-        // Add your filter drawer component here
+        <FilterMenu />
       </VNavigationDrawer>
       <VMain>
         <slot />
