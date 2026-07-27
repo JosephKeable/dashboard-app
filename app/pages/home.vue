@@ -1,6 +1,9 @@
 <template>
   <VContainer>
-    <div class="d-flex flex-wrap ga-4">
+    <h2 class="ml-3">
+      Key Performance Indicators
+    </h2>
+    <div class="d-flex flex-wrap ga-8">
       <KpiCard
         title="Revenue"
         :value="revenue"
@@ -22,9 +25,9 @@
         icon="mdi-clipboard-list"
       />
     </div>
-    <h3 class="mt-6 ml-3">
+    <h2 class="mt-8 ml-3">
       Revenue Summary
-    </h3>
+    </h2>
     <VTabs
       v-model="tab"
       color="primary"
@@ -40,12 +43,16 @@
     </VTabs>
     <VTabsWindow v-model="tab">
       <VTabsWindowItem value="monthly">
-        <MonthlyRevenueChart />
+        <RevenueChart :by="tab" />
       </VTabsWindowItem>
       <VTabsWindowItem value="region">
-        region chart
+        <RevenueChart :by="tab" />
       </VTabsWindowItem>
     </VTabsWindow>
+    <h2 class="mt-8 ml-3">
+      Transaction Details
+    </h2>
+    <TransactionTable />
   </VContainer>
 </template>
 
@@ -71,6 +78,8 @@ const conversionRate = computed(() => {
 })
 </script>
 
-<style lang="">
-
+<style>
+.v-card {
+  border-radius: 10px;
+}
 </style>

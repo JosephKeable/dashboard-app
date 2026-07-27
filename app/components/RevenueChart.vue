@@ -10,11 +10,19 @@
 <script lang="ts" setup>
 import { Bar } from 'vue-chartjs'
 
+const props = defineProps({
+  by: {
+    type: String,
+    required: true,
+  },
+})
+
 const dashboardStore = useDashboardStore()
 const monthNames = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ]
+
 const months = computed(() => {
   const monthsSet = new Set<string>()
   dashboardStore.transactions.forEach((t) => {
@@ -26,41 +34,36 @@ const months = computed(() => {
 })
 
 const monthlyRevenue = computed(() => {
-  let monthBeingCounted: string = ''
-  let monthCount: number = 0
-  const monthValues: number[] = []
-  dashboardStore.transactions.forEach((trans, index) => {
-    if (trans.status === 'completed') {
-      const date = new Date(trans.date)
-      const monthName = `${monthNames[date.getMonth()]} ${date.getFullYear()}`
-
-      if (monthBeingCounted === '') {
-        monthBeingCounted = monthName
-      }
-      if (monthBeingCounted === monthName) {
-        monthCount += trans.value
-      }
-      else {
-        monthValues.push(monthCount)
-        monthBeingCounted = monthName
-        monthCount = 0
-        monthCount += trans.value
-        if (index === dashboardStore.transactions.length - 1) {
-          monthValues.push(monthCount)
-        }
-      }
-    }
+  const monthTotals: Record<string, number> = {}
+  months.value.forEach((month) => {
+    monthTotals[month] = dashboardStore.transactions.filter(trans =>
+      `${monthNames[new Date(trans.date).getMonth()]} ${new Date(trans.date).getFullYear()}` === month && trans.status === 'completed',
+    ).reduce((sum, t) => sum + t.value, 0)
   })
-  return monthValues
+  return Object.values(monthTotals)
+})
+
+const regionNames = computed(() => {
+  return [...new Set(dashboardStore.transactions.map(t => t.region))]
+})
+
+const regionRevenue = computed(() => {
+  const regionTotals: Record<string, number> = {}
+  regionNames.value.forEach((reg) => {
+    regionTotals[reg] = dashboardStore.transactions.filter(trans =>
+      trans.region === reg && trans.status === 'completed',
+    ).reduce((sum, t) => sum + t.value, 0)
+  })
+  return Object.values(regionTotals)
 })
 
 const chartData = ref({
-  labels: months,
+  labels: props.by === 'monthly' ? months.value : props.by === 'region' ? regionNames.value : [],
   datasets: [
     {
       label: '$',
       backgroundColor: 'rgb(33, 150, 243)',
-      data: monthlyRevenue,
+      data: props.by === 'monthly' ? monthlyRevenue.value : props.by === 'region' ? regionRevenue.value : [],
     },
   ],
 })
@@ -68,18 +71,20 @@ const chartOptions = ref({
   responsive: true,
   maintainAspectRatio: false,
 })
-watch(() => dashboardStore.transactions, () => {
+watch(() => dashboardStore.transactions, updateChartData, { deep: true })
+watch(() => props.by, updateChartData)
+function updateChartData() {
   chartData.value = {
-    labels: months.value,
+    labels: props.by === 'monthly' ? months.value : props.by === 'region' ? regionNames.value : [],
     datasets: [
       {
         label: '$',
         backgroundColor: 'rgb(33, 150, 243)',
-        data: monthlyRevenue.value,
+        data: props.by === 'monthly' ? monthlyRevenue.value : props.by === 'region' ? regionRevenue.value : [],
       },
     ],
   }
-}, { deep: true })
+}
 </script>
 
 <style scoped>

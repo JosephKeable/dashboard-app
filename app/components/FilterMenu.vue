@@ -6,14 +6,18 @@
       </h5>
       <VBtn
         variant="text"
-        density="compact"
+        density="comfortable"
         size="small"
         @click="dashboardStore.filters.dateRange = []; fetchData()"
       >
         Clear Date Selection
       </VBtn>
     </div>
-
+    <div v-if="dashboardStore.filters.dateRange.length === 2">
+      <p class="ml-4 text-body-3">
+        {{ new Date(dashboardStore.filters.dateRange[0]).toLocaleDateString() }} - {{ new Date(dashboardStore.filters.dateRange[1]).toLocaleDateString() }}
+      </p>
+    </div>
     <VDatePicker
       v-model="dashboardStore.filters.dateRange"
       width="100%"
