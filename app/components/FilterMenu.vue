@@ -13,15 +13,16 @@
         Clear Date Selection
       </VBtn>
     </div>
-    <div v-if="dashboardStore.filters.dateRange.length === 2">
-      <p class="ml-4 text-body-3">
-        {{ new Date(dashboardStore.filters.dateRange[0]).toLocaleDateString() }} - {{ new Date(dashboardStore.filters.dateRange[1]).toLocaleDateString() }}
-      </p>
+    <div
+      v-if="dashboardStore.filters.dateRange.length === 2"
+      class="ml-4 range-text"
+    >
+      {{ new Date(dashboardStore.filters.dateRange[0]).toLocaleDateString() }} - {{ new Date(dashboardStore.filters.dateRange[1]).toLocaleDateString() }}
     </div>
     <VDatePicker
       v-model="dashboardStore.filters.dateRange"
       width="100%"
-      :multiple="2"
+      multiple="range"
       :max="new Date().toISOString().split('T')[0]"
       :hide-header="true"
       @update:model-value="fetchData"
@@ -109,5 +110,9 @@ watch(dashboardStore.transactions, (newTransactions) => {
 <style>
 .component--filter-menu {
   padding: 16px;
+}
+.range-text {
+  font-size: 0.8rem;
+  color: #666;
 }
 </style>
