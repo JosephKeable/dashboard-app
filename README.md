@@ -1,6 +1,14 @@
-# Nuxt Minimal Starter
+# Monitoring the Situation - A Demo Dashboard
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a demo single page dashboard app with a mock server. The mock server currently returns an JSON object of id-keyed transactions, filtered to adhere to the user's selected filters. These are requested by stores/dashboard.ts. 
+
+In a live production environment with up to 100,000 records, this filtering would be applied in a request to the database where they are stored, rather than through JS logic. As is currently the case, there would be a default set of filters applied and (as is not currently the case) there would be a required choice of date range. With these measures, the liklihood of the client code ever having to deal with all 100,000 records would be significantly reduced. 
+
+Similarly, other logic like the calculation of KPIs could be significantly lightened with database requests, or could be performed by the API if this was deemed a worthwhile performance gain. 
+
+Typically, I would implement pagination to deal with calls for data from very large databases. However, in this case it would be inappropriate, as the requirements of the brief imply that all dashboard components derive their contents from the same underlying data (due to the need for filters that apply across all components) and the only place where pagination would make sense is in the table. It has a form of pagination but this only a display/UI feature, it is not driving network calls. Having it drive network calls would be essential for deriving performance benefits. In a real, bigger application, perhaps a data table like this would have such a feature.
+
+Below is the setup provided by nuxt for a running a build of this app.
 
 ## Setup
 

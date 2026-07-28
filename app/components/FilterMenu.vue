@@ -25,7 +25,7 @@
       multiple="range"
       :max="new Date().toISOString().split('T')[0]"
       :hide-header="true"
-      @update:model-value="fetchData"
+      @update:model-value="dashboardStore.filters.dateRange.length === 2 ? fetchData() : null"
     />
     <h5 class="ml-4">
       Select Regions
