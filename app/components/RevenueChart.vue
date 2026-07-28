@@ -9,6 +9,7 @@
 
 <script lang="ts" setup>
 import { Bar } from 'vue-chartjs'
+import colors from 'vuetify/util/colors'
 
 const props = defineProps({
   by: {
@@ -62,7 +63,7 @@ const chartData = ref({
   datasets: [
     {
       label: '$',
-      backgroundColor: 'rgb(33, 150, 243)',
+      backgroundColor: colors.green.lighten2,
       data: props.by === 'monthly' ? monthlyRevenue.value : props.by === 'region' ? regionRevenue.value : [],
     },
   ],
@@ -79,7 +80,7 @@ function updateChartData() {
     datasets: [
       {
         label: '$',
-        backgroundColor: 'rgb(33, 150, 243)',
+        backgroundColor: colors.green.lighten2,
         data: props.by === 'monthly' ? monthlyRevenue.value : props.by === 'region' ? regionRevenue.value : [],
       },
     ],
