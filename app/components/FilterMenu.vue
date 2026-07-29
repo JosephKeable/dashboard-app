@@ -65,6 +65,22 @@
         {{ status }}
       </VChip>
     </VChipGroup>
+    <h5 class="ml-4">
+      Select Transaction Value Range
+    </h5>
+    <VRangeSlider
+      v-model="dashboardStore.filters.transactionValue"
+      class="mt-10 mx-5"
+      step="10"
+      :max="dashboardStore.maxValue"
+      :min="min"
+      thumb-label="always"
+      @update:model-value="fetchData"
+    >
+      <template #thumb-label="{ modelValue }">
+        ${{ modelValue }}
+      </template>
+    </VRangeSlider>
   </div>
 </template>
 
@@ -72,13 +88,21 @@
 import type { Transaction } from '~/types'
 
 const dashboardStore = useDashboardStore()
-async function fetchData() {
-  await dashboardStore.fetch()
-}
 
+const timeoutFunc = ref <ReturnType<typeof setTimeout> | null>(null)
 const regions = ref<string[]>([])
 const statuses = ref<string[]>([])
+const min = ref<number>(0)
 
+async function fetchData() {
+  if (timeoutFunc.value !== null) {
+    clearTimeout(timeoutFunc.value)
+    timeoutFunc.value = null
+  }
+  timeoutFunc.value = setTimeout(async () => {
+    await dashboardStore.fetch()
+  }, 800)
+}
 function setRegions(transactions: Transaction[]) {
   const transactionRegions = [...new Set(transactions.map(t => t.region))]
   transactionRegions.forEach((r) => {
@@ -101,9 +125,10 @@ onMounted(() => {
   setRegions(dashboardStore.transactions)
   setStatuses(dashboardStore.transactions)
 })
-watch(dashboardStore.transactions, (newTransactions) => {
-  setRegions(newTransactions)
-  setStatuses(newTransactions)
+watch(() => dashboardStore.transactions.length, () => {
+  // If new transactions were added, then any new options for region/status would be added automatically.
+  setRegions(dashboardStore.transactions)
+  setStatuses(dashboardStore.transactions)
 })
 </script>
 

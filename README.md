@@ -8,7 +8,9 @@ Similarly, other logic like the calculation of KPIs could be significantly light
 
 Typically, I would implement pagination to deal with calls for data from very large databases. However, in this case it would be inappropriate, as the requirements of the brief imply that all dashboard components derive their contents from the same underlying data (due to the need for filters that apply across all components) and the only place where pagination would make sense is in the table. It has a form of pagination but this only a display/UI feature, it is not driving network calls. Having it drive network calls would be essential for deriving performance benefits. In a real, bigger application, perhaps a data table like this would have such a feature.
 
-One thing that's a bit odd about what I've done is that I push the user from the root URL of site to /home. This is unecesary in an app of this size. I have done it out of habit, assuming more than one page would be needed.
+One thing that's a bit odd about what I've done is that I push the user from the root URL of site to /home. This is unecesary in an app of this size. I have done it out of habit, assuming that in a real application, more than one page would be needed and users' access to them judged.
+
+I would also like to draw attention to the inclusion of a transaction value range filter. Alongside this, I have implemented debouncing for all changes to filters, guarding against unnecessary network trafic.
 
 Below is the setup provided by Nuxt for a running a build of this app. What it doesn't mention is that you will need node.js installed. I am using node version 24.18.0, I followed these instructions to get it working initially: https://nodejs.org/en/download. Otherwise I think the following instructions should be sufficient.
 

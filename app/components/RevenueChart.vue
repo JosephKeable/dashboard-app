@@ -68,12 +68,15 @@ const chartData = ref({
     },
   ],
 })
+
 const chartOptions = ref({
   responsive: true,
   maintainAspectRatio: false,
 })
+
 watch(() => dashboardStore.transactions, updateChartData, { deep: true })
 watch(() => props.by, updateChartData)
+
 function updateChartData() {
   chartData.value = {
     labels: props.by === 'monthly' ? months.value : props.by === 'region' ? regionNames.value : [],

@@ -408,8 +408,6 @@ const transactions = {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  console.log(body)
-  console.log('Dashboard Store fetch infos', transactions)
   let transactionsArray: { id: string, value: number, date: string, customerId: string, status: string, region: string, businessUnit: string } [] = Object.values(transactions)
 
   transactionsArray = transactionsArray.filter((transaction) => {
@@ -435,7 +433,16 @@ export default defineEventHandler(async (event) => {
       return false
     }
 
+    if (body.transactionValue.length > 0 && (transaction.value < body.transactionValue[0] || transaction.value > body.transactionValue[1])) {
+      return false
+    }
+
     return true
   })
-  return transactionsArray
+
+  // In a real production environment, new transactions could appear at any time. So keeping this max value up to date would be important.
+  const valuesArr = Object.values(transactions).map(t => t.value)
+  const maxValue = Math.ceil(Math.max(...valuesArr) / 10) * 10 + 100
+
+  return { transactionsArray, maxValue }
 })

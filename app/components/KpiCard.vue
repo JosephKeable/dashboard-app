@@ -64,16 +64,22 @@ function returnReadableFilterKey(filterKey: string): string {
       return 'In'
     case 'status':
       return 'Status:'
+    case 'transactionValue':
+      return 'Covering transactions between'
     default:
       return filterKey
   }
 }
 function returnReadableFilterValue(filterValue: unknown, filterKey: string): string {
-  console.log('returnReadableFilterValue', filterValue, filterKey)
   switch (filterKey) {
     case 'dateRange':
       if (Array.isArray(filterValue) && filterValue.length === 2) {
         return `${new Date(filterValue[0]).toLocaleDateString()} to ${new Date(filterValue[1]).toLocaleDateString()}`
+      }
+      return String(filterValue)
+    case 'transactionValue':
+      if (Array.isArray(filterValue) && filterValue.length === 2) {
+        return `$${filterValue[0]} and $${filterValue[1]}`
       }
       return String(filterValue)
     default:

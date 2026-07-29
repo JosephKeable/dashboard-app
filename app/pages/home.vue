@@ -60,6 +60,8 @@
 const tab = ref('monthly')
 const dashboardStore = useDashboardStore()
 await callOnce(async () => {
+  // This order is important
+  // The date filter needs to be in place to avoid fetching all the items.
   await dashboardStore.setDefaultDateRange()
   await dashboardStore.fetch()
 })
@@ -68,7 +70,7 @@ const revenue = computed(() => `$${dashboardStore.transactions.reduce((sum, t) =
     return sum + t.value
   }
   return sum
-}, 0)}`)
+}, 0).toFixed(2)}`)
 const activeCustomers = computed(() => [...new Set(dashboardStore.transactions.map(t => t.customerId))].length)
 const conversionRate = computed(() => {
   if (dashboardStore.transactions.length === 0) {
